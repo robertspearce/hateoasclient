@@ -14,19 +14,17 @@ Set up a model for the JSON web service that is being called with the links inli
 
 Set up a Spring restTemplate in the calling code:
 
-{code:java}
     private final static RestTemplate restTemplate = new RestTemplate();
     static{
-	    List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
-	    messageConverters.add(new HateoasMessageConverter());
-	    restTemplate.setMessageConverters(messageConverters);	
+    	List<HttpMessageConverter<?>> messageConverters = new ArrayList<HttpMessageConverter<?>>();
+    	messageConverters.add(new HateoasMessageConverter());
+    	restTemplate.setMessageConverters(messageConverters);	
     }
-{code}
+
 
 Call the restTemplate passing the url, and the response type:
 
-{code:java}
-		Foo foo = 
-				restTemplate.getForObject("http://localhost:8080/path/to/resource", 
-						Foo.class);
-{code}
+    Foo foo = 
+    	restTemplate.getForObject("http://localhost:8080/path/to/resource", 
+    		Foo.class);
+
