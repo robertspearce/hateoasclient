@@ -1,7 +1,7 @@
 package hateoas.client.converter;
 
-import hateoas.client.resolver.LinkResolver;
-import hateoas.client.resolver.SimpleLinkResolver;
+import hateoas.client.resolver.ResolvedObjectFactory;
+import hateoas.client.resolver.SimpleResolvedObjectFactory;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -32,7 +32,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 public class HateoasMessageConverter extends AbstractHttpMessageConverter<Object> 
 	implements GenericHttpMessageConverter<Object>{
 
-	private final LinkResolver linkResolver = new SimpleLinkResolver();
+	private final ResolvedObjectFactory linkResolver = new SimpleResolvedObjectFactory();
 
 	public HateoasMessageConverter() {
 		super(new MediaType("application", "hal+json", Charset.forName("UTF-8")));
@@ -43,7 +43,6 @@ public class HateoasMessageConverter extends AbstractHttpMessageConverter<Object
 	static{
 		// Links and embedded elements are not directly present in the object. We therefore
 		// want to ignore these in the message.
-		// TODO: check whether there is a way to only ignore certain fields (_link and _embed).
 		objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	}
 
@@ -106,7 +105,10 @@ public class HateoasMessageConverter extends AbstractHttpMessageConverter<Object
 
 	private static String convertStreamToString(java.io.InputStream is) {
 	    java.util.Scanner s = new java.util.Scanner(is).useDelimiter("\\A");
-	    return s.hasNext() ? s.next() : "";
+	    String val = s.hasNext()? s.next():"";
+	    s.close();
+	    return val;
+	    
 	}
 
 	@Override
@@ -116,7 +118,7 @@ public class HateoasMessageConverter extends AbstractHttpMessageConverter<Object
 		String json = convertStreamToString(inputMessage.getBody());
 		Object item = readJavaType((Class<?>)type,json);
 		if(linkResolver!=null){
-			item = linkResolver.resolve(json,item);
+			item = linkResolver.create(json,item);
 		}
 		return item;
 	}

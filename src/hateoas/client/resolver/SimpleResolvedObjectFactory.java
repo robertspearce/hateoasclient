@@ -1,6 +1,5 @@
 package hateoas.client.resolver;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,7 +19,11 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public class SimpleLinkResolver implements LinkResolver {
+/**
+ * Resolved object factory that resolves all links eagerly.
+ * @author robert
+ */
+public class SimpleResolvedObjectFactory implements ResolvedObjectFactory {
 
 	private static final LinkDiscoverers DEFAULT_LINK_DISCOVERERS;
 	private static LinkDiscoverer linkDiscoverer;
@@ -47,7 +50,7 @@ public class SimpleLinkResolver implements LinkResolver {
 	}
 
 	@Override
-	public <T> T resolve(String message, T item) {
+	public <T> T create(String message, T item) {
 		Class<?> clazz = item.getClass();
 		for(Method method: clazz.getMethods()){
 			if(isSettableMethod(method)){
@@ -56,20 +59,7 @@ public class SimpleLinkResolver implements LinkResolver {
 					List<Link> links = linkDiscoverer.findLinksWithRel(rel,message);
 					if(links.size()==1 && method.getParameterTypes().length == 1){
 						Link link = links.get(0);
-						Class<?> parameterType = method.getParameterTypes()[0];
-						Object parameter = restTemplate.getForObject(link.getHref(),parameterType);
-						try {
-							method.invoke(item,parameter);
-						} catch (IllegalArgumentException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (IllegalAccessException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (InvocationTargetException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
+						new ResolverImpl<T>(link,item,method).resolve();
 					}
 				}
 			}

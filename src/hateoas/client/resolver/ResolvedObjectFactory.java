@@ -10,6 +10,6 @@ package hateoas.client.resolver;
  * @author robert
  *
  */
-public interface LinkResolver {
-	public <T> T resolve(String message,T item);
+public interface ResolvedObjectFactory {
+	public <T> T create(String message,T item);
 }
