@@ -1,12 +1,14 @@
 hateoasclient
 =============
 
-Client for consuming hateoas using JSON.
-
+Client for consuming hateoas using Java.
+ 
 Use:
 ====
 
 Designed for use with Spring core and Spring Hateoas.
+
+Supports JSON web services.
 
 To use.
 

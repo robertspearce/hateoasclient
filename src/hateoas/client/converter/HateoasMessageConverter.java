@@ -1,7 +1,7 @@
 package hateoas.client.converter;
 
 import hateoas.client.resolver.ResolvedObjectFactory;
-import hateoas.client.resolver.SimpleResolvedObjectFactory;
+import hateoas.client.resolver.AsyncResolvedObjectFactory;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -32,7 +32,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 public class HateoasMessageConverter extends AbstractHttpMessageConverter<Object> 
 	implements GenericHttpMessageConverter<Object>{
 
-	private final ResolvedObjectFactory linkResolver = new SimpleResolvedObjectFactory();
+	private final ResolvedObjectFactory linkResolver = new AsyncResolvedObjectFactory();
 
 	public HateoasMessageConverter() {
 		super(new MediaType("application", "hal+json", Charset.forName("UTF-8")));

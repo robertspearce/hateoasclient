@@ -27,6 +27,7 @@ public class ResolverImpl<T> implements Resolver {
 	/**
 	 * Create a simple resolver for a link.
 	 * @param link location of resource to resolve the link.
+	 * @param instance to update when the link is resolved.
 	 * @param method set method to update the resolved value. This should be the setter
 	 * message. It is assumed have only one parameter.
 	 */
