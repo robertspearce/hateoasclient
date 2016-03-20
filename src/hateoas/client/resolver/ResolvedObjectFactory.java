@@ -11,5 +11,5 @@ package hateoas.client.resolver;
  *
  */
 public interface ResolvedObjectFactory {
-	public <T> T create(String message,T item);
+	public <T> T create(String message, T item);
 }
